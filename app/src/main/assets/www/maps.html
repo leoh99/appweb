@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Styled Maps - Night Mode</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <style>
+    /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+    #map {
+        height: 500px;
+    }
+    /* Optional: Makes the sample page fill the window. */
+    html,
+    body {
+		height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+    </style>
+    <script src="https://maps.google.com/maps/api/js?sensor=false&language=ja&region=JP""></script>
+</head>
+<body onload="initMap()">
+<div id="map"></div>
+<div id="floating-panel">
+    <b>Mode of Travel: </b>
+    <select id="mode">
+        <option value="DRIVING">Driving</option>
+        <option value="WALKING">Walking</option>
+        <option value="BICYCLING">Bicycling</option>
+        <option value="TRANSIT">Transit</option>
+    </select>
+    <a id="googlemap" href="https://www.google.com/maps/@35.1680288,136.8960937,18z"> Google maps</a>
+</div>
+<script>
+var map;
+var infowindow;
+function initMap() {
+    map = new google.maps.Map(document.getElementById('map'), {
+        center: {
+            lat: -34.397,
+            lng: 150.644
+        },
+        zoom: 15
+    });
+
+    infoWindow = new google.maps.InfoWindow({
+        map: map
+    });
+
+    // Try HTML5 geolocation.
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            var pos = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude
+            };
+            infoWindow.setPosition(pos);
+            infoWindow.setContent('Location found.');
+            map.setCenter(pos);
+
+        }, function() {
+            handleLocationError(true, infoWindow, map.getCenter());
+        });
+    } else {
+        // Browser doesn't support Geolocation
+        handleLocationError(false, infoWindow, map.getCenter());
+    }
+
+     map.addListener('center_changed', function() {
+          // 3 seconds after the center of the map has changed, pan back to the
+          // marker.
+          window.setTimeout(function() {
+            map.panTo(marker.getPosition());
+          }, 3000);
+        });
+
+    google.maps.event.addListener(map, 'click', function(event) {
+        var lat = event.latLng.lat();
+        var lng = event.latLng.lng();
+        var u = "https://www.google.com/maps/@"+lat+","+lng+",18z";
+        document.getElementById("googlemap").href = u;
+         var pos = {
+                lat: lat,
+                lng: lng
+            };
+         map.setCenter(pos);
+    });
+
+}
+</script>
+</body>
+</html>

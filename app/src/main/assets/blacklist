@@ -1,0 +1,36 @@
+[xw.qq.com]
+div class="bd"
+div class="related"
+div class="info-box game"
+script src="//mat1.gtimg.com/www/mobi/js/app-bar-v3.min.js"
+
+[m.chinaso.com]
+div class="plus-wrap"
+
+[wap.eastmoney.com]
+div class="hot_read"
+div id="tgbottom"
+div class="jjph_box"
+
+[m.guancha.cn]
+section class="latestNews"
+div class="specialBox"
+
+[www.sankei.com]
+script *
+
+[bbs.tianya.cn]
+div id="like_div"
+
+[m.hupu.com]
+* class="card-col-4"
+div id="J_footer"
+
+[sp.yomiuri.co.jp]
+* class="sp_ad_rectangle"
+
+[www.ftchinese.com]
+div class="banner-container"
+
+[bbs.tianya.cn]
+script src="http://static.tianyaui.com/global/m/v3/static/js/main_70454b3.js"

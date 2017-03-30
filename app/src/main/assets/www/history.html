@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="jquery/jquery.mobile-1.4.5.min.css">
+    <script src="jquery/jquery-1.11.3.min.js"></script>
+    <script src="jquery/jquery.mobile-1.4.5.min.js"></script>
+    <script type='text/javascript'>
+        $(window).load(function() {
+            loadData();
+        });
+        function loadData() {
+            $('#ListDiv').append('<ul id="List" data-role="listview" data-filter="true" data-inset="true"></ul>');
+            var hist = Android.getHistory();
+            var jsonData = JSON.parse(hist);
+            var list=jsonData.recordset;
+            for (i=0;i<list.length; i++) {
+                url=list[i].url;
+                title=list[i].title;
+                $('#List').append('<li><a href="'+url+'"><h3>'+title+'</h3><p>'+url+'</p></a></li>');
+            }
+            $('#List').listview();
+        }
+        function clearData() {
+            Android.clearData();
+            $('#ListDiv').empty();
+            loadData();
+        }
+    </script>
+</head>
+
+<body>
+<div data-role="page" data-theme="b">
+    <button onClick="clearData()">Clean</button>
+    <div data-role="content" id="ListDiv"></div>
+    <!-- /content -->
+</div>
+<!-- /page -->
+</body>
+
+</html>
