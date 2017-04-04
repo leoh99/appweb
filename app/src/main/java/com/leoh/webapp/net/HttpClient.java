@@ -189,6 +189,7 @@ public class HttpClient {
         WebResponse resp = cache.get(url);
         if (resp != null) {
             Log.d(TAG, "HIT=" + url);
+            resp.cacheHit++;
             return new WebResourceResponse(resp.mime, resp.encode, new ByteArrayInputStream(resp.data));
         }
 
