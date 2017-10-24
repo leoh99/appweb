@@ -19,9 +19,6 @@ div class="specialBox"
 [www.sankei.com]
 script *
 
-[bbs.tianya.cn]
-div id="like_div"
-
 [m.hupu.com]
 * class="card-col-4"
 div id="J_footer"
@@ -33,4 +30,5 @@ div id="J_footer"
 div class="banner-container"
 
 [bbs.tianya.cn]
-script src="http://static.tianyaui.com/global/m/v3/static/js/main_70454b3.js"
+div class="u-like"
+script src="http://static.tianyaui.com/global/m/v3/static/js/main_f95daef.js"
