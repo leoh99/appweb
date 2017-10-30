@@ -13,97 +13,69 @@
     }
 .ui-bar {
  margin:0;
- padding:5px;
+ padding:20px;
 }
 </style>
 </head>
 
-<body>
-    <div data-role="page" data-theme="b">
-        <div data-role="header">
-            <div style="margin:4px">
-                <form action="https://www.google.com/search" id="tsf" method="GET" name="gs" onsubmit="return q.value!=''" role="search" />
-                <input name="site" value="" type="hidden" />
-                <input name="source" type="hidden" value="hp">
-                <input value="8R2kWIeLHszL0ATXn4No" name="ei" type="hidden" />
-                <input id="lst-ib" maxlength="2048" name="q" autocapitalize="off" autocomplete="off" autocorrect="off" title="" type="search" value="" placeholder="Search.." />
-                <!-- input type="submit" data-icon="search" data-mini="true" / -->
-                </form>
-            </div>
-        </div>
-
-        <div data-role="content">
-            <div class="ui-grid-c" style="text-align: center;">
-                <div class="ui-block-a"><div class="ui-bar">
-                    <a href="http://m.chinaso.com"><img src="img/chinaso.ico" /> </a>
-                </div></div>
-                <div class="ui-block-b"><div class="ui-bar">
-                    <a href="http://m.sh.bendibao.com"><img src="img/bendibao.ico" /></a>
-                </div></div>
-                <div class="ui-block-c"><div class="ui-bar">
-                    <a href="http://xw.qq.com/index.htm"><img src="img/qq.ico" /></a>
-                </div></div>
-                <div class="ui-block-d"><div class="ui-bar">
-                    <a href="http://tieba.baidu.com/mo/q----,sz@320_240-1-3---2/m?tn=bdIndex&lp=9001"><img src="img/baidu.ico" /> </a>
-                </div></div>
-
-                <div class="ui-block-a"><div class="ui-bar">
-                    <a href="http://cn.nikkei.com"><img src="img/nikkei.ico" /> </a>
-                </div></div>
-                <div class="ui-block-b"><div class="ui-bar">
-                    <a href="http://www.usatoday.com"><img src="img/usa.ico" /> </a>
-                </div></div>
-                <div class="ui-block-c"><div class="ui-bar">
-                    <a href="https://www.google.com/maps/"><img src="img/maps.ico" /> </a>
-                </div></div>
-                <div class="ui-block-d"><div class="ui-bar">
-                    <a href="http://m.faz.net"><img src="img/faz.ico" /> </a>
-                </div></div>
-
-                <div class="ui-block-a"><div class="ui-bar">
-                    <a href="https://www.asahi.com/sp/"><img src="https://www.asahi.com/favicon.ico" /> </a>
-                </div></div>
-                <div class="ui-block-b"><div class="ui-bar">
-                    <a href="http://www.sankei.com/smp/"><img src="img/sankei.ico" /> </a>
-                </div></div>
-                <div class="ui-block-c"><div class="ui-bar">
-                    <a href="http://sports.sina.cn"><img src="img/sina.ico" /> </a>
-                </div></div>
-                <div class="ui-block-d"><div class="ui-bar">
-                    <a href="http://m.guancha.cn" target="_blank"><img src="img/guancha.png" /> </a>
-                </div></div>
-
-                <div class="ui-block-a"><div class="ui-bar">
-                    <a href="http://www.cnbc.com/world/?region=usa"><img src="img/cnbc.ico" /> </a>
-                </div></div>
-                <div class="ui-block-b"><div class="ui-bar">
-                    <a href="http://wap.eastmoney.com/iphone/default.shtml" target="_blank"><img src="img/eastmoney.ico" /> </a>
-                </div></div>
-                <div class="ui-block-c"><div class="ui-bar">
-                    <a href="http://bbs.tianya.cn/m/block.jsp" target="_blank"><img src="img/tianya.ico" /> </a>
-                </div></div>
-                <div class="ui-block-d"><div class="ui-bar">
-                    <a href="http://m.cjdby.net/index.php?mobile=no&mobile=2" target="_blank"><img src="img/cjdby.ico" /> </a>
-                </div></div>
-            </div><!-- /grid-c -->
-        </div>
-
-        <div data-role="footer" data-position="fixed">
-            <form action="javascript:window.open(document.getElementById('myURL').value, '_blank');">
-                <input type="url" id="myURL" name="website" value="http://" autocomplete="on" data-clear-btn="true" />
-                <!-- input type="submit" data-mini="true" value="Go" / -->
+<body onload="update_sites();">
+<div data-role="page" data-theme="b">
+    <div data-role="header">
+        <div style="margin:4px">
+            <form action="https://www.google.com/search" id="tsf" method="GET" name="gs" onsubmit="return q.value!=''" role="search" />
+            <input name="site" value="" type="hidden" />
+            <input name="source" type="hidden" value="hp">
+            <input value="8R2kWIeLHszL0ATXn4No" name="ei" type="hidden" />
+            <input id="lst-ib" maxlength="2048" name="q" autocapitalize="off" autocomplete="off" autocorrect="off" title="" type="search" value="" placeholder="Search.." />
+            <!-- input type="submit" data-icon="search" data-mini="true" / -->
             </form>
-            <div data-role="navbar">
-                <ul>
-                    <li><a href="#" data-icon="gear" target="_blank">Setting</a> </li>
-                    <li><a href="history.html" data-icon="clock" target="_blank">History</a> </li>
-                    <li><a href="https://www.google.com/ncr" data-icon="search" target="_blank">Search</a> </li>
-                    <li><a href="maps.html" data-icon="navigation" target="_blank">Map</a> </li>
-                </ul>
-            </div>
         </div>
     </div>
 
+    <div data-role="content">
+        <div class="ui-grid-c" style="text-align: center;" id='sites'>
+        </div>
+        <!-- /grid-c -->
+    </div>
+
+    <div data-role="footer" data-position="fixed">
+        <form action="javascript:window.open(document.getElementById('myURL').value, '_blank');">
+            <input type="url" id="myURL" name="website" value="http://" autocomplete="on" data-clear-btn="true" />
+            <!-- input type="submit" data-mini="true" value="Go" / -->
+        </form>
+        <div data-role="navbar">
+            <ul>
+                <li><a href="#" data-icon="gear" target="_blank">Setting</a> </li>
+                <li><a href="history.html" data-icon="clock" target="_blank">History</a> </li>
+                <li><a href="https://www.google.com/ncr" data-icon="search" target="_blank">Search</a> </li>
+                <li><a href="maps.html" data-icon="navigation" target="_blank">Map</a> </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<script>
+        var urls = [
+            "http://m.chinaso.com", "http://m.sh.bendibao.com", "https://rain.likeso.ml", "http://ditu.amap.com",
+            "http://www.aljazeera.com", "http://www.sankei.com/smp/", "http://edition.cnn.com", "http://m.faz.net",
+            "http://www.cnbc.com", "http://xw.qq.com", "http://tieba.baidu.com/mo/q----,sz@320_240-1-3---2/m?tn=bdIndex&lp=9001", "https://sports.sina.cn",
+            "http://m.cjdby.net", "http://www.tianya.cn/m", "http://wap.eastmoney.com", "http://m.guancha.cn"
+        ];
+        var ui_class = ["ui-block-a", "ui-block-b", "ui-block-c", "ui-block-d"];
+
+        function update_sites() {
+            $.each(urls, function(i) {
+                var s = '<div class="' + ui_class[i % 4] + '"><div class="ui-bar"><a href="' + urls[i] +
+                    '" target="_blank"><img src="' + getDomain(urls[i]) + '/favicon.ico" /></a></div>';
+                $('#sites').append(s);
+
+            });
+        }
+
+        function getDomain(url) {
+            var arr = url.split("/");
+            return arr[0] + "//" + arr[2];
+        }
+    </script>
 </body>
 
 </html>

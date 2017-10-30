@@ -1,9 +1,10 @@
-www.asahi.com=div[id="ArticleBody"]
+www.asahi.com=div[class="ArticleBody"]
 www.ftchinese.com=div[class="story-container"]
 www.usatoday.com=div[class="story-body "]
-xw.qq.com=div[class="content fontsmall"]
+xw.qq.com=div[class="primary"]
 www.sankei.com=section[class="modToplist"]
 sp.yomiuri.co.jp=article
 www.cnbc.com=article
-news.sina.cn=p[class="art_t"]
-sports.sina.cn=p[class="art_t"]
+news.sina.cn=article
+sports.sina.cn=article
+edition.cnn.com=article

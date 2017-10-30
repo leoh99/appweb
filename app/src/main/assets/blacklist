@@ -1,14 +1,13 @@
 [xw.qq.com]
-div class="bd"
 div class="related"
-div class="info-box"
-script src="//mat1.gtimg.com/www/mobi/js/app-bar-v3.min.js"
+div class="today_hot"
 
 [m.chinaso.com]
 div class="plus-wrap"
 
 [wap.eastmoney.com]
-script src="http://cmsjs.eastmoney.com/analysis/emtj.min.js?v=20150408"
+div id="bulletin_board"
+script *
 
 [m.guancha.cn]
 section class="latestNews"
@@ -30,3 +29,7 @@ div class="banner-container"
 [bbs.tianya.cn]
 div class="u-like"
 script src="http://static.tianyaui.com/global/m/v3/static/js/main_f95daef.js"
+
+[sports.sina.cn]
+section class="j_article_relevent_news">
+section class="j_article_relevent">

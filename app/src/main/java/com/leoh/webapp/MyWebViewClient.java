@@ -83,6 +83,16 @@ public class MyWebViewClient extends WebViewClient {
         Uri uri = request.getUrl();
         String url = uri.toString();
         Log.d(TAG, "Over=" + url);
+
+        if (url.startsWith("intent"))
+            return true;
+
+        if(reqUrl != null && url != null && url.equals(reqUrl)) {
+            Log.d(TAG, "Back=" + url);
+            webView.goBack();
+            return true;
+        }
+        Log.d(TAG, "u=" + reqUrl);
         reqUrl = url;
         if (url.startsWith("http:") || url.startsWith("https:")) {
             if (httpClient.loadUrl(url)) {
@@ -90,8 +100,7 @@ public class MyWebViewClient extends WebViewClient {
                 progressBar.setVisibility(View.VISIBLE);
                 return true;
             }
-        } else if (url.startsWith("intent"))
-            return true;
+        }
 
         return false;
     }
