@@ -5,9 +5,12 @@ import android.content.res.AssetManager;
 import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
+import android.webkit.CookieManager;
 
+import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.parser.Parser;
 import org.jsoup.select.Elements;
 
@@ -36,6 +39,7 @@ public class WebParser {
     private static final java.lang.String FILE_BLACKLIST = "blacklist";
     private static final java.lang.String FILE_WHITELIST = "whitelist";
     private static final java.lang.String FILE_ADHOSTS = "adhosts";
+    private final CookieManager webviewCookieManager = CookieManager.getInstance();
     private Document doc;
     private String url;
     private Map<String, List<String>> blackMap = new HashMap<>();
@@ -50,16 +54,55 @@ public class WebParser {
         loadBlockedDomains(c);
     }
 
-    public String parse(String url, String html) throws Exception {
-        if (setUrl(url)) {
-            doc = Jsoup.parse(html, url, Parser.xmlParser());
-            //System.out.println(html);
-            String ret = getDoc();
-            if (ret != null)
-                return ret;
+    public static String createHtmlMessage(String body) {
+        return "<html><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"/><meta charset=”UTF-8″/>" +
+                "<style>body{font-size:18px;display:block;background:#fff1e0 none repeat scroll 0 0}img {max-width:100%}</style></head>" +
+                "<body >" + body + "</body></html>";
+    }
+
+    private static void print(String msg, Object... args) {
+        System.out.println(String.format(msg, args));
+    }
+
+    private static String trim(String s, int width) {
+        if (s.length() > width)
+            return s.substring(0, width - 1) + ".";
+        else
+            return s;
+    }
+
+    public WebResponse parseUrl(String url, String userAgent) throws IOException {
+        setUrl(url);
+
+        Connection conn = Jsoup.connect(url)
+                .timeout(5000)
+                .header("User-Agent", userAgent);
+        String cookie = webviewCookieManager.getCookie(url);
+        if (cookie != null) {
+            //Log.d(TAG, "=>"+cookie);
+            conn.header("Cookie", cookie);
         }
 
-        return html;
+        Connection.Response res = conn.execute();
+        Map<String, String> cookies = res.cookies();
+        for (Map.Entry<String, String> entry : cookies.entrySet()) {
+            webviewCookieManager.setCookie(url, entry.getKey() + "=" + entry.getValue());
+        }
+
+        String type = res.contentType();
+        String charset = res.charset();
+        if (charset == null)
+            charset = "UTF-8";
+        doc = res.parse();
+        String ret = getDoc();
+        if (ret == null)
+            ret = doc.outerHtml();
+        WebResponse resp = new WebResponse(res.url().toString(), type, charset, ret.getBytes(charset));
+        resp.title = doc.title();
+
+        //listLinks();
+
+        return resp;
     }
 
     public boolean setUrl(String url) {
@@ -84,12 +127,13 @@ public class WebParser {
             }
         }
         Elements ele;
-        if (blackContent != null ) {
-            //Log.d(TAG, list.toString());
+        if (blackContent != null) {
             for (String e : blackContent) {
                 ele = doc.select(e);
-                if (!ele.isEmpty())
+                if (!ele.isEmpty()) {
+                    //Log.d(TAG, ele.toString());
                     ele.remove();
+                }
             }
             return doc.outerHtml();
         }
@@ -112,12 +156,6 @@ public class WebParser {
         }
 
         return block;
-    }
-
-    public static String createHtmlMessage(String body) {
-        return "<html><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"/><meta charset=”UTF-8″/>" +
-                "<style>body{font-size:18px;display:block;background:#fff1e0 none repeat scroll 0 0}img {max-width:100%}</style></head>" +
-                "<body >" + body + "</body></html>";
     }
 
     private void loadWhiteList(Context context) {
@@ -217,4 +255,28 @@ public class WebParser {
         File extStore = Environment.getExternalStorageDirectory();
         return new File(extStore.getAbsolutePath() + "/APPWEB/" + fileName);
     }
+
+    private void listLinks() {
+        //Elements links = doc.select("a[href]");
+        Elements scripts = doc.select("script");
+        Elements imports = doc.select("link[href]");
+
+        print("\n%s [%s]", TAG, url);
+        print("\nScripts: (%d)", scripts.size());
+        for (Element src : scripts) {
+            print("%s  * %s: <%s>", TAG, src.tagName(), src.attr("abs:src"));
+        }
+
+        print("\n%s Imports: (%d)", TAG, imports.size());
+        for (Element link : imports) {
+            print("%s  * %s <%s> (%s)", TAG, link.tagName(), link.attr("abs:href"), link.attr("rel"));
+        }
+
+//        print("\nLinks: (%d)", links.size());
+//        for (Element link : links) {
+//            print(" * a: <%s>  (%s)", link.attr("abs:href"), trim(link.text(), 35));
+//        }
+
+    }
+
 }

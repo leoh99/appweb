@@ -22,10 +22,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by leoh on 1/12/17.
@@ -64,6 +61,7 @@ public class MyWebViewClient extends WebViewClient {
     @Override
     public void onPageCommitVisible(WebView view, String url) {
         super.onPageCommitVisible(view, url);
+        Log.d(TAG, "Visible:" +url);
         webView.getSettings().setBlockNetworkImage(false);
     }
 
@@ -76,14 +74,15 @@ public class MyWebViewClient extends WebViewClient {
     @Override
     public void onPageFinished(WebView view, String url)
     {
-        //Log.d(TAG, "finish");
-        httpClient.setTitle(url, view.getTitle());
+        Log.d(TAG, "finish:" +url);
         progressBar.setVisibility(View.GONE);
     }
 
     @Override
-    public boolean shouldOverrideUrlLoading(WebView view, String url) {
-        Log.d(TAG, "over=" + url);
+    public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+        Uri uri = request.getUrl();
+        String url = uri.toString();
+        Log.d(TAG, "Over=" + url);
         reqUrl = url;
         if (url.startsWith("http:") || url.startsWith("https:")) {
             if (httpClient.loadUrl(url)) {
@@ -91,7 +90,9 @@ public class MyWebViewClient extends WebViewClient {
                 progressBar.setVisibility(View.VISIBLE);
                 return true;
             }
-        }
+        } else if (url.startsWith("intent"))
+            return true;
+
         return false;
     }
 
@@ -100,19 +101,20 @@ public class MyWebViewClient extends WebViewClient {
         WebResourceResponse response = null;
         Uri uri = request.getUrl();
         String url = uri.toString();
-        //Log.d(TAG, "req=" + url);
+        //Log.d(TAG, "Req=" + url);
         if (url.startsWith("http:") || url.startsWith("https:")) {
             response = httpClient.getWebResourceResponse(uri, request.getRequestHeaders());
         }
         //Log.d(TAG, "responsed");
         return response;
+
     }
 
     public void loadDataWithBaseURL(final String url, final String html, final String mime, final String encode) {
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                webView.loadDataWithBaseURL(url, html, mime, encode, null);
+                webView.loadDataWithBaseURL(url, html, mime, encode, url);
             }
         });
     }

@@ -1,16 +1,14 @@
 [xw.qq.com]
 div class="bd"
 div class="related"
-div class="info-box game"
+div class="info-box"
 script src="//mat1.gtimg.com/www/mobi/js/app-bar-v3.min.js"
 
 [m.chinaso.com]
 div class="plus-wrap"
 
 [wap.eastmoney.com]
-div class="hot_read"
-div id="tgbottom"
-div class="jjph_box"
+script src="http://cmsjs.eastmoney.com/analysis/emtj.min.js?v=20150408"
 
 [m.guancha.cn]
 section class="latestNews"

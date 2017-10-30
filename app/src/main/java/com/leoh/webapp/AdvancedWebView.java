@@ -44,7 +44,7 @@ public class AdvancedWebView extends WebView {
 
         //webSettings.setAppCacheEnabled(true);
         //webSettings.setDomStorageEnabled(true);
-        webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
+        //webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
 
         webSettings.setAllowUniversalAccessFromFileURLs(true);
         //webSettings.setAllowFileAccessFromFileURLs(true);
