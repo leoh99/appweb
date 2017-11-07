@@ -6,8 +6,10 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.View;
+import android.webkit.DownloadListener;
 import android.webkit.GeolocationPermissions;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
@@ -37,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (Intent.ACTION_VIEW.equals(action)) {
             Uri uri = intent.getData();
-            webclient.shouldOverrideUrlLoading(webview, uri.toString());
+            webclient.loadUrl(uri.toString());
         } else if (Intent.ACTION_SEND.equals(action) && type != null) {
             if ("text/plain".equals(type)) {
                 handleSendText(intent); // Handle text being sent
@@ -45,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
                 handleSendImage(intent); // Handle single image being sent
             }
         } else {
-            webview.goHome();
+            webclient.goHome();
         }
 
     }
@@ -80,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onProgressChanged(WebView view, int progress) {
                 progressBar.setProgress(progress);
+                //Log.d("appweb", "onProgressChanged:="+progress);
                 if (progress == progressBar.getMax())
                     progressBar.setVisibility(View.GONE);
             }
@@ -88,6 +91,16 @@ public class MainActivity extends AppCompatActivity {
             public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
                 super.onGeolocationPermissionsShowPrompt(origin, callback);
                 callback.invoke(origin, true, false);
+            }
+        });
+
+        webview.setDownloadListener(new DownloadListener() {
+            public void onDownloadStart(String url, String userAgent,
+                                        String contentDisposition, String mimetype,
+                                        long contentLength) {
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(url));
+                startActivity(i);
             }
         });
     }

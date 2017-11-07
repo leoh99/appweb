@@ -2,7 +2,9 @@ package com.leoh.webapp.net;
 
 import android.content.Context;
 import android.content.res.AssetManager;
+import android.graphics.YuvImage;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Environment;
 import android.util.Log;
 import android.webkit.CookieManager;
@@ -29,6 +31,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by leoh on 2/2/17.
@@ -45,6 +49,7 @@ public class WebParser {
     private Map<String, List<String>> blackMap = new HashMap<>();
     private Properties whiteMap = new Properties();
     private Set<String> adsSet = new HashSet<>();
+    private List<Pattern> adsList = new ArrayList<>(32);
     private String whiteContent;
     private List<String> blackContent;
 
@@ -96,11 +101,25 @@ public class WebParser {
         doc = res.parse();
         String ret = getDoc();
         if (ret == null)
-            ret = doc.outerHtml();
+            ret = doc.html();
         WebResponse resp = new WebResponse(res.url().toString(), type, charset, ret.getBytes(charset));
         resp.title = doc.title();
 
         //listLinks();
+
+        return resp;
+    }
+
+    public WebResponse loadUrl(String url) {
+        WebResponse resp = null;
+        try {
+            Connection.Response response = Jsoup.connect(url)
+                    .ignoreContentType(true).execute();
+            resp = new WebResponse(url, response.contentType(), "", response.bodyAsBytes());
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         return resp;
     }
@@ -135,15 +154,31 @@ public class WebParser {
                     ele.remove();
                 }
             }
-            return doc.outerHtml();
+            return doc.html();
         }
 
         return null;
     }
 
     public boolean isBlock(Uri uri) {
+        //String host = uri.getHost();
+        //Log.d(TAG, "Req=" + uri);
+        for (Pattern p : adsList) {
+            Matcher m = p.matcher(uri.toString());
+            if (m.find()) {
+                //Log.d(TAG, p.toString());
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public boolean isBlock0(Uri uri) {
         boolean block = false;
         String host = uri.getHost();
+
+
         if (host != null) {
             block = adsSet.contains(host);
             if (!block && !host.isEmpty()) {
@@ -243,6 +278,8 @@ public class WebParser {
             while ((line = reader.readLine()) != null) {
                 line = line.trim();
                 adsSet.add(line);
+                Log.d(TAG, line);
+                adsList.add(Pattern.compile(line));
             }
             reader.close();
         } catch (IOException e) {
@@ -259,7 +296,7 @@ public class WebParser {
     private void listLinks() {
         //Elements links = doc.select("a[href]");
         Elements scripts = doc.select("script");
-        Elements imports = doc.select("link[href]");
+        Elements imports = doc.select("[src]");
 
         print("\n%s [%s]", TAG, url);
         print("\nScripts: (%d)", scripts.size());
@@ -269,7 +306,7 @@ public class WebParser {
 
         print("\n%s Imports: (%d)", TAG, imports.size());
         for (Element link : imports) {
-            print("%s  * %s <%s> (%s)", TAG, link.tagName(), link.attr("abs:href"), link.attr("rel"));
+            print("%s  * %s <%s>", TAG, link.tagName(), link.attr("abs:src"));
         }
 
 //        print("\nLinks: (%d)", links.size());

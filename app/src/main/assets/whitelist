@@ -1,10 +1,10 @@
-www.asahi.com=div[class="ArticleBody"]
+www.asahi.com=div[id="ArticleBody"]
 www.ftchinese.com=div[class="story-container"]
 www.usatoday.com=div[class="story-body "]
 xw.qq.com=div[class="primary"]
-www.sankei.com=section[class="modToplist"]
 sp.yomiuri.co.jp=article
 www.cnbc.com=article
 news.sina.cn=article
 sports.sina.cn=article
 edition.cnn.com=article
+www3.nhk.or.jp=section[class="module--content"]

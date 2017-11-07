@@ -46,7 +46,7 @@
         <div data-role="navbar">
             <ul>
                 <li><a href="#" data-icon="gear" target="_blank">Setting</a> </li>
-                <li><a href="history.html" data-icon="clock" target="_blank">History</a> </li>
+                <li><a href="file:///android_asset/www/history.html" data-icon="clock" target="_blank">History</a> </li>
                 <li><a href="https://www.google.com/ncr" data-icon="search" target="_blank">Search</a> </li>
                 <li><a href="maps.html" data-icon="navigation" target="_blank">Map</a> </li>
             </ul>
@@ -55,9 +55,9 @@
 </div>
 <script>
         var urls = [
-            "http://m.chinaso.com", "http://m.sh.bendibao.com", "https://rain.likeso.ml", "http://ditu.amap.com",
-            "http://www.aljazeera.com", "http://www.sankei.com/smp/", "http://edition.cnn.com", "http://m.faz.net",
-            "http://www.cnbc.com", "http://xw.qq.com", "http://tieba.baidu.com/mo/q----,sz@320_240-1-3---2/m?tn=bdIndex&lp=9001", "https://sports.sina.cn",
+            "http://m.chinaso.com", "http://www.bendibao.com", "https://rain.likeso.ml", "https://www.jin10.com/",
+            "http://www3.nhk.or.jp/news", "http://www.sankei.com/smp/", "http://edition.cnn.com", "http://m.faz.net",
+            "http://www.cnbc.com", "http://xw.qq.com", "http://tieba.baidu.com/mo/q----,sz@320_240-1-3---2/m?tn=bdIndex&lp=9001", "http://sports.sina.cn",
             "http://m.cjdby.net", "http://www.tianya.cn/m", "http://wap.eastmoney.com", "http://m.guancha.cn"
         ];
         var ui_class = ["ui-block-a", "ui-block-b", "ui-block-c", "ui-block-d"];
@@ -72,8 +72,9 @@
         }
 
         function getDomain(url) {
-            var arr = url.split("/");
-            return arr[0] + "//" + arr[2];
+            //var arr = url.split("/");
+            //return arr[0] + "//" + arr[2];
+            return url.match(/(http)s*(.\/\/)(.[^/]+)/g)[0];
         }
     </script>
 </body>

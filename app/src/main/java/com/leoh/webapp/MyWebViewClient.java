@@ -3,6 +3,7 @@ package com.leoh.webapp;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.webkit.CookieManager;
@@ -22,7 +23,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.util.Collections;
 import java.util.List;
+
+import static android.util.Log.d;
 
 /**
  * Created by leoh on 1/12/17.
@@ -35,7 +40,8 @@ public class MyWebViewClient extends WebViewClient {
     private final ProgressBar progressBar;
     private final HttpClient httpClient;
     private final Activity activity;
-    private String reqUrl;
+    //private String curUrl;
+    private String homeUrl = "file:///android_asset/www/index.html";
 
     public MyWebViewClient(Activity c, AdvancedWebView view, ProgressBar progress) {
         activity = c;
@@ -61,7 +67,7 @@ public class MyWebViewClient extends WebViewClient {
     @Override
     public void onPageCommitVisible(WebView view, String url) {
         super.onPageCommitVisible(view, url);
-        Log.d(TAG, "Visible:" +url);
+        //Log.d(TAG, "Visible:" +url);
         webView.getSettings().setBlockNetworkImage(false);
     }
 
@@ -74,34 +80,29 @@ public class MyWebViewClient extends WebViewClient {
     @Override
     public void onPageFinished(WebView view, String url)
     {
-        Log.d(TAG, "finish:" +url);
-        progressBar.setVisibility(View.GONE);
+        //Log.d(TAG, "finish:" +url);
     }
 
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
         Uri uri = request.getUrl();
+        String scheme = uri.getScheme();
         String url = uri.toString();
-        Log.d(TAG, "Over=" + url);
 
-        if (url.startsWith("intent"))
-            return true;
-
-        if(reqUrl != null && url != null && url.equals(reqUrl)) {
-            Log.d(TAG, "Back=" + url);
-            webView.goBack();
+        if (scheme.equals("intent")) {
             return true;
         }
-        Log.d(TAG, "u=" + reqUrl);
-        reqUrl = url;
-        if (url.startsWith("http:") || url.startsWith("https:")) {
+
+        if (scheme.startsWith("http")) {
             if (httpClient.loadUrl(url)) {
                 progressBar.setProgress(0);
                 progressBar.setVisibility(View.VISIBLE);
+                Log.d(TAG, "OverrideUrlLoading=" + url);
                 return true;
             }
         }
 
+        Log.d(TAG, "Over=" + url);
         return false;
     }
 
@@ -110,10 +111,13 @@ public class MyWebViewClient extends WebViewClient {
         WebResourceResponse response = null;
         Uri uri = request.getUrl();
         String url = uri.toString();
+
         //Log.d(TAG, "Req=" + url);
+
         if (url.startsWith("http:") || url.startsWith("https:")) {
             response = httpClient.getWebResourceResponse(uri, request.getRequestHeaders());
         }
+
         //Log.d(TAG, "responsed");
         return response;
 
@@ -135,6 +139,17 @@ public class MyWebViewClient extends WebViewClient {
                 webView.loadUrl(url);
             }
         });
+    }
+
+    public void goHome() {
+        File extStore = Environment.getExternalStorageDirectory();
+        File myFile = new File(extStore.getAbsolutePath() + "/APPWEB/index.html");
+        if(myFile.exists()){
+            homeUrl = "file://"+ myFile;
+            d(TAG, myFile.toString());
+        }
+
+        loadUrl(homeUrl);
     }
 
     public void onLoadError(final String msg) {
@@ -164,50 +179,16 @@ public class MyWebViewClient extends WebViewClient {
         showToast("All cleared");
         httpClient.webCache.clear();
         httpClient.webHostory.clear();
-        //webView.clearCache(true);
-        //webView.clearMatches();
-        //webView.clearHistory();
-        //clearCookies();
+        webView.clearCache(true);
+        webView.clearMatches();
+        webView.clearHistory();
+        clearCookies();
      }
 
     @JavascriptInterface
     public void clearCookies() {
         CookieManager webviewCookieManager = CookieManager.getInstance();
         webviewCookieManager.removeAllCookies(null);
-    }
-
-    @JavascriptInterface
-    public void goHistory() {
-        Log.d(TAG, "goHistory");
-        String h1 = "<!doctype html><html>" +
-                "<head>" +
-                "<meta charset=\"utf-8\">" +
-                "<meta name=\"referrer\" content=\"no-referrer\">" +
-                "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">" +
-                "<link rel=\"stylesheet\" href=\"jquery/jquery.mobile-1.4.5.min.css\">" +
-                "<script src=\"appweb.js\"></script>" +
-                "<script src=\"jquery/jquery-1.11.3.min.js\"></script>" +
-                "<script src=\"jquery/jquery.mobile-1.4.5.min.js\"></script>" +
-                "</head><body><div data-role=\"page\" data-theme=\"b\">" +
-                "<a href=\"#\" onClick=\"javascript:clearData();\">Clean</a>" +
-                "<div data-role=\"content\">\n" +
-                "<ul id=\"list\" class=\"touch\" data-role=\"listview\" data-icon=\"false\" data-split-icon=\"delete\" data-split-theme=\"d\">";
-
-        String h2 ="</ul></div></div></body></html>";
-
-        StringBuilder builder = new StringBuilder(h1);
-
-        List<WebHistoryItem> histList = httpClient.webHostory.getHistory();
-        for (WebHistoryItem i : histList) {
-            builder.append("<li><a href=\"");
-            builder.append(i.url);
-            builder.append("\"><h3>");
-            builder.append(i.title);
-            builder.append("</h3></a><a href=\"#\" class=\"delete\">Delete</a></li>");
-        }
-
-        builder.append(h2);
-        loadDataWithBaseURL("file:///android_asset/www/", builder.toString(), "text/html", "UTF-8");
     }
 
     @JavascriptInterface
@@ -220,11 +201,12 @@ public class MyWebViewClient extends WebViewClient {
         JSONObject jResult = new JSONObject();
         JSONArray jArray = new JSONArray();
         List<WebHistoryItem> histList = httpClient.webHostory.getHistory();
+        Collections.sort(histList);
         try {
-            for (int i = 0; i < histList.size(); i++) {
+            for (WebHistoryItem  l : histList) {
                 JSONObject jGroup = new JSONObject();
-                jGroup.put("url", histList.get(i).url);
-                jGroup.put("title", histList.get(i).title);
+                jGroup.put("url", l.url);
+                jGroup.put("title", l.title);
 
                 jArray.put(jGroup);
             }

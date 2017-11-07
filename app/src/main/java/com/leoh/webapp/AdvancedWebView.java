@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.ViewConfiguration;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -22,7 +23,6 @@ import static android.util.Log.d;
 
 public class AdvancedWebView extends WebView {
     private static final String TAG = "appwebview";
-    public static final String URL_HOME = "file:///android_asset/www/index.html";
     private final float maxFling;
     private GestureDetector gd;
     private WebViewClient client;
@@ -31,6 +31,7 @@ public class AdvancedWebView extends WebView {
         super(context, attrs);
         setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
         setBackgroundColor(0x0);
+        setLayerType(View.LAYER_TYPE_HARDWARE, null);
 
         WebSettings webSettings = getSettings();
         webSettings.setJavaScriptEnabled(true);
@@ -52,17 +53,6 @@ public class AdvancedWebView extends WebView {
 
         maxFling = ViewConfiguration.get(context).getScaledMaximumFlingVelocity();
         gd = new GestureDetector(context, new CustomGestureListener());
-    }
-
-    public void goHome() {
-        File extStore = Environment.getExternalStorageDirectory();
-        File myFile = new File(extStore.getAbsolutePath() + "/APPWEB/index.html");
-        if(myFile.exists()){
-            loadUrl("file://"+ myFile);
-            d(TAG, myFile.toString());
-        } else {
-            loadUrl(URL_HOME);
-        }
     }
 
     public void resume() {
@@ -115,7 +105,7 @@ public class AdvancedWebView extends WebView {
             int powerY = (int) (velocityY * 100 / maxFling);
             if (Math.abs(powerX) > Math.abs(powerY) ) {
                 if (powerX < -POWER) {
-                    goHome();
+                    //client.goHome();
                 } else if (powerX > POWER) {
                     goForward();
                 }
