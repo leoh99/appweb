@@ -6,7 +6,8 @@ div class="today_hot"
 div class="plus-wrap"
 
 [wap.eastmoney.com]
-div id="bulletin_board"
+div class="hot_read"
+div class="jjph_important"
 
 [m.guancha.cn]
 section class="latestNews"
@@ -19,7 +20,7 @@ div class="swiper-container"
 
 [m.hupu.com]
 * class="card-col-4"
-div id="J_footer"
+div id="J_footer"www.cnbc.com
 
 [sp.yomiuri.co.jp]
 * class="sp_ad_rectangle"
@@ -29,11 +30,22 @@ div class="banner-container"
 
 [bbs.tianya.cn]
 div class="u-like"
-script src="http://static.tianyaui.com/global/m/v3/static/js/main_f95daef.js"
 
 [sports.sina.cn]
-section class="j_article_relevent_news">
-section class="j_article_relevent">
+section class="j_article_relevent"
+section class="j_relevent_video"
+section class="j_article_relevent_news"
+
+[news.sina.cn]
+section class="j_article_relevent"
+section class="j_relevent_video"
+section class="j_article_relevent_news"
 
 [www3.nhk.or.jp]
 aside *
+
+[edition.cnn.com]
+div class="Zone__wrapper"
+
+[wap.baidu.com]
+div class="center-content"

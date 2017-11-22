@@ -1,7 +1,6 @@
 www.asahi.com=div[id="ArticleBody"]
 www.ftchinese.com=div[class="story-container"]
 www.usatoday.com=div[class="story-body "]
-xw.qq.com=div[class="primary"]
 sp.yomiuri.co.jp=article
 www.cnbc.com=article
 news.sina.cn=article

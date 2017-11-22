@@ -4,14 +4,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
+
     <ProgressBar
         android:id="@+id/progressBar"
-        android:minHeight="5dip"
-        android:maxHeight="5dip"
+        style="@android:style/Widget.ProgressBar.Horizontal"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        style="@android:style/Widget.ProgressBar.Horizontal" />
-    <com.leoh.webapp.AdvancedWebView
+        android:max="100"
+        android:maxHeight="5dip"
+        android:minHeight="5dip" />
+    <com.leoh.appweb.AdvancedWebView
         android:id="@+id/webView"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
